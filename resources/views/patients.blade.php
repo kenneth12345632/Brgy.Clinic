@@ -35,7 +35,8 @@
                     @forelse($patients as $patient)
                     <tr class="hover:bg-slate-50/50 transition">
                         <td class="px-6 py-4 text-sm font-medium text-slate-600">{{ $patient->patient_id }}</td>
-                        <td class="px-6 py-4 text-sm font-bold text-slate-800">{{ $patient->name }}</td>
+                        <td class="px-6 py-4 text-sm font-bold text-slate-800">{{ $patient->full_name }}</td>
+                        {{-- This now uses the Carbon accessor from your Model --}}
                         <td class="px-6 py-4 text-sm text-slate-600">{{ $patient->age }}</td>
                         <td class="px-6 py-4 text-sm text-slate-600">{{ $patient->gender }}</td>
                         <td class="px-6 py-4 text-sm text-slate-500">{{ $patient->address }}</td>
@@ -64,10 +65,11 @@
     </div>
 </div>
 
+{{-- MODAL SECTION --}}
 <div id="patientModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
     <div class="flex items-center justify-center min-h-screen px-4">
         <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleModal('patientModal')"></div>
-        <div class="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden">
+        <div class="relative bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
                 <h3 id="modalTitle" class="text-xl font-bold text-slate-800">Add New Patient</h3>
                 <button onclick="toggleModal('patientModal')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -75,16 +77,42 @@
 
             <form id="patientForm" action="{{ route('patients.store') }}" method="POST" class="p-6 space-y-4">
                 @csrf
-                <div id="methodContainer"></div> <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Full Name</label>
-                    <input type="text" name="name" id="field_name" required class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
+                <div id="methodContainer"></div> 
+                
+                <div class="grid grid-cols-12 gap-4">
+                    <div class="col-span-12 md:col-span-4">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">First Name</label>
+                        <input type="text" name="first_name" id="field_first_name" required class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
+                    </div>
+                    <div class="col-span-12 md:col-span-3">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Middle Name</label>
+                        <input type="text" name="middle_name" id="field_middle_name" class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
+                    </div>
+                    <div class="col-span-8 md:col-span-3">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Last Name</label>
+                        <input type="text" name="last_name" id="field_last_name" required class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
+                    </div>
+                    <div class="col-span-4 md:col-span-2">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Suffix</label>
+                        <input type="text" name="suffix" id="field_suffix" placeholder="Jr." class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
+                    </div>
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4">
+                    {{-- Updated: Birthday Input + Auto-Age Display --}}
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Age</label>
-                        <input type="number" name="age" id="field_age" required class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Birthday</label>
+                        <input type="date" name="birthday" id="field_birthday" oninput="calculateAge(this.value)" required class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
                     </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Calculated Age</label>
+                        <div class="w-full px-4 py-2 bg-slate-100 text-slate-500 rounded-xl font-bold border border-dashed border-slate-300">
+                            <span id="display_age">0</span> Years Old
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Gender</label>
                         <select name="gender" id="field_gender" required class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
@@ -92,17 +120,27 @@
                             <option value="Female">Female</option>
                         </select>
                     </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Address</label>
-                    <input type="text" name="address" id="field_address" required class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Address</label>
+                        <input type="text" name="address" id="field_address" required class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
+                    <div class="space-y-1">
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Service</label>
-                        <input type="text" name="service" id="field_service" required class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
+                        <select name="service" id="field_service" required class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
+                            <option value="Immunization">Immunization</option>
+                            <option value="Family Planning">Family Planning</option>
+                            <option value="Deworming">Deworming</option>
+                            <option value="Supplementation">Supplementation</option>
+                            <option value="Pre-natal">Pre-natal</option>
+                            <option value="Ferrous">Ferrous</option>
+                            <option value="Free Consultation">Free Consultation</option>
+                            <option value="RBS (Random Blood Sugar)">RBS (Random Blood Sugar)</option>
+                            <option value="Feeding Program">Feeding Program</option>
+                            <option value="TB DOTS">TB DOTS</option>
+                        </select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Last Visit</label>
@@ -124,30 +162,48 @@
         document.getElementById(modalID).classList.toggle("hidden");
     }
 
+    // New Function to calculate age in the browser
+    function calculateAge(birthDate) {
+        if (!birthDate) {
+            document.getElementById('display_age').innerText = "0";
+            return;
+        }
+        const today = new Date();
+        const birth = new Date(birthDate);
+        let age = today.getFullYear() - birth.getFullYear();
+        const m = today.getMonth() - birth.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+            age--;
+        }
+        document.getElementById('display_age').innerText = age < 0 ? 0 : age;
+    }
+
     function openAddModal() {
         document.getElementById('modalTitle').innerText = "Add New Patient";
         const form = document.getElementById('patientForm');
         form.action = "{{ route('patients.store') }}";
         document.getElementById('methodContainer').innerHTML = ""; 
         form.reset();
+        document.getElementById('display_age').innerText = "0"; // Reset age display
         toggleModal('patientModal');
     }
 
     function editPatient(button) {
-        // 1. Get the patient object from the button's data attribute
         const patient = JSON.parse(button.getAttribute('data-patient'));
 
         document.getElementById('modalTitle').innerText = "Edit Patient Record";
-        
-        // 2. Correct URL: /patients/1
         document.getElementById('patientForm').action = "/patients/" + patient.id; 
-        
-        // 3. Add PUT method for Laravel
         document.getElementById('methodContainer').innerHTML = '<input type="hidden" name="_method" value="PUT">';
 
-        // 4. Populate the fields
-        document.getElementById('field_name').value = patient.name;
-        document.getElementById('field_age').value = patient.age;
+        document.getElementById('field_first_name').value = patient.first_name;
+        document.getElementById('field_middle_name').value = patient.middle_name || '';
+        document.getElementById('field_last_name').value = patient.last_name;
+        document.getElementById('field_suffix').value = patient.suffix || '';
+        
+        // Use birthday instead of age
+        document.getElementById('field_birthday').value = patient.birthday;
+        calculateAge(patient.birthday); // Trigger the auto-calc for the display
+
         document.getElementById('field_gender').value = patient.gender;
         document.getElementById('field_address').value = patient.address;
         document.getElementById('field_service').value = patient.service;

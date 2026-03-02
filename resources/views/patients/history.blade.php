@@ -17,10 +17,11 @@
     </div>
 
     <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+        {{-- Header updated to use full_name --}}
         <div class="p-8 bg-slate-800 text-white flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
                 <span class="text-blue-400 text-xs font-bold uppercase tracking-widest">Medical Record</span>
-                <h1 class="text-3xl font-bold">{{ $patient->name }}</h1>
+                <h1 class="text-3xl font-bold">{{ $patient->full_name }}</h1>
                 <p class="text-slate-400 text-sm mt-1">
                     ID: <span class="text-white font-mono">{{ $patient->patient_id }}</span> | 
                     {{ $patient->gender }} | 
@@ -41,6 +42,7 @@
             <div class="relative">
                 <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-slate-100"></div>
 
+                {{-- Visit Entry --}}
                 <div class="relative pl-12 pb-12">
                     <div class="absolute left-2 top-1 w-4 h-4 bg-blue-600 rounded-full border-4 border-white ring-1 ring-blue-600"></div>
                     
@@ -59,7 +61,7 @@
                         </div>
                         
                         <div class="text-slate-600 space-y-3 text-sm leading-relaxed">
-                            <p>Patient was attended for <strong>{{ $patient->service }}</strong>. The current medical record indicates the patient resides at <strong>{{ $patient->address }}</strong>.</p>
+                            <p>Patient <strong>{{ $patient->first_name }}</strong> was attended for <strong>{{ $patient->service }}</strong>. The current medical record indicates the patient resides at <strong>{{ $patient->address }}</strong>.</p>
                             <div class="bg-white p-3 rounded-lg border border-slate-200 italic text-slate-500 text-xs">
                                 Note: This is the initial automated record entry based on the patient registration.
                             </div>
@@ -67,6 +69,7 @@
                     </div>
                 </div>
 
+                {{-- Initial Account Opening --}}
                 <div class="relative pl-12">
                     <div class="absolute left-3 top-1 w-2.5 h-2.5 bg-slate-300 rounded-full border-2 border-white"></div>
                     <div class="text-slate-400 text-sm">
