@@ -6,13 +6,13 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
-    {
-        Schema::table('appointments', function (Blueprint $table) {
-            // This makes the column optional in the database
-            $table->foreignId('patient_id')->nullable()->change();
-        });
-    }
+   public function up(): void
+{
+    Schema::table('appointments', function (Blueprint $table) {
+        // This is the key line that allows saving without a patient
+        $table->unsignedBigInteger('patient_id')->nullable()->change();
+    });
+}
 
     public function down(): void
     {

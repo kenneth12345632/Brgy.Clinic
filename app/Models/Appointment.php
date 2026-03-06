@@ -3,16 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Appointment extends Model
 {
     protected $fillable = [
-        'patient_id', 'appointment_date', 'appointment_time', 'service_type', 'status'
+        'patient_id',
+        'appointment_date',
+        'appointment_time',
+        'service_type',
+        'status',
     ];
 
-    public function patient(): BelongsTo
+    // Link back to the patient
+    public function patient()
     {
-        return $this->belongsTo(Patient::class);
+        return $this->belongsTo(Patient::class, 'patient_id', 'patient_id');
     }
 }

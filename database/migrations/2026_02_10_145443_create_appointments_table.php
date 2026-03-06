@@ -13,11 +13,17 @@ return new class extends Migration
 {
     Schema::create('appointments', function (Blueprint $table) {
         $table->id();
-        // Link to your patients table
-        $table->foreignId('patient_id')->constrained()->onDelete('cascade');
+        
+        // Updated to link specifically to the 'patient_id' column
+        $table->unsignedBigInteger('patient_id');
+        $table->foreign('patient_id')
+              ->references('patient_id')
+              ->on('patients')
+              ->onDelete('cascade');
+
         $table->date('appointment_date');
         $table->time('appointment_time');
-        $table->string('service_type'); // e.g., Pre-natal, Immunization
+        $table->string('service_type'); 
         $table->enum('status', ['pending', 'confirmed', 'cancelled'])->default('pending');
         $table->timestamps();
     });

@@ -28,36 +28,30 @@
                         <th class="px-6 py-4">Age</th>
                         <th class="px-6 py-4">Gender</th>
                         <th class="px-6 py-4">Address</th>
-                        <th class="px-6 py-4 text-center uppercase">Actions</th>
+                        <th class="px-6 py-4 text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
                     @forelse($patients as $patient)
                     <tr class="hover:bg-slate-50/50 transition">
                         <td class="px-6 py-4 text-sm font-medium text-slate-600">{{ $patient->patient_id }}</td>
-                        <td class="px-6 py-4 text-sm font-bold text-slate-800">{{ $patient->full_name }}</td>
-                        {{-- This now uses the Carbon accessor from your Model --}}
-                        <td class="px-6 py-4 text-sm text-slate-600">{{ $patient->age }}</td>
+                        <td class="px-6 py-4 text-sm font-bold text-slate-800">{{ $patient->first_name }} {{ $patient->last_name }}</td>
+                        <td class="px-6 py-4 text-sm text-slate-600">{{ $patient->age }} Years Old</td>
                         <td class="px-6 py-4 text-sm text-slate-600">{{ $patient->gender }}</td>
                         <td class="px-6 py-4 text-sm text-slate-500">{{ $patient->address }}</td>
-                        <td class="px-6 py-4">
+                        <td class="px-6 py-4 text-center">
                             <div class="flex justify-center gap-4 text-slate-400">
-                                <a href="{{ route('patients.show', $patient->id) }}" title="View Profile" class="hover:text-blue-500 transition">
+                               <a href="{{ route('patients.show', $patient->patient_id) }}" title="View Profile" class="hover:text-blue-500 transition">
                                     <i class="fa-solid fa-eye text-lg"></i>
                                 </a>
-
                                 <button onclick="editPatient(this)" data-patient='@json($patient)' title="Edit" class="hover:text-orange-400 transition">
                                     <i class="fa-solid fa-pen text-lg"></i>
                                 </button>
-
-                                <a href="{{ route('patients.history', $patient->id) }}" title="Clinical Records" class="hover:text-slate-600 transition">
-                                    <i class="fa-solid fa-file-lines text-lg"></i>
-                                </a>
                             </div>
                         </td>
                     </tr>
                     @empty
-                        <tr><td colspan="6" class="text-center py-4">No patients found.</td></tr>
+                        <tr><td colspan="6" class="text-center py-10 text-slate-400 italic">No patients found.</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -70,43 +64,38 @@
     <div class="flex items-center justify-center min-h-screen px-4">
         <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleModal('patientModal')"></div>
         <div class="relative bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-slate-50">
                 <h3 id="modalTitle" class="text-xl font-bold text-slate-800">Add New Patient</h3>
                 <button onclick="toggleModal('patientModal')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
 
-            <form id="patientForm" action="{{ route('patients.store') }}" method="POST" class="p-6 space-y-4">
+            <form id="patientForm" action="{{ route('patients.store') }}" method="POST" class="p-8 space-y-5">
                 @csrf
                 <div id="methodContainer"></div> 
                 
                 <div class="grid grid-cols-12 gap-4">
                     <div class="col-span-12 md:col-span-4">
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">First Name</label>
-                        <input type="text" name="first_name" id="field_first_name" required class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">First Name</label>
+                        <input type="text" name="first_name" id="field_first_name" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-400">
                     </div>
-                    <div class="col-span-12 md:col-span-3">
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Middle Name</label>
-                        <input type="text" name="middle_name" id="field_middle_name" class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
+                    <div class="col-span-12 md:col-span-4">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Middle Name</label>
+                        <input type="text" name="middle_name" id="field_middle_name" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-400">
                     </div>
-                    <div class="col-span-8 md:col-span-3">
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Last Name</label>
-                        <input type="text" name="last_name" id="field_last_name" required class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
-                    </div>
-                    <div class="col-span-4 md:col-span-2">
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Suffix</label>
-                        <input type="text" name="suffix" id="field_suffix" placeholder="Jr." class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
+                    <div class="col-span-12 md:col-span-4">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Last Name</label>
+                        <input type="text" name="last_name" id="field_last_name" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-400">
                     </div>
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4">
-                    {{-- Updated: Birthday Input + Auto-Age Display --}}
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Birthday</label>
-                        <input type="date" name="birthday" id="field_birthday" oninput="calculateAge(this.value)" required class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Birthday</label>
+                        <input type="date" name="birthday" id="field_birthday" oninput="calculateAge(this.value)" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-400">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Calculated Age</label>
-                        <div class="w-full px-4 py-2 bg-slate-100 text-slate-500 rounded-xl font-bold border border-dashed border-slate-300">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Calculated Age</label>
+                        <div class="w-full px-4 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-bold border border-slate-200">
                             <span id="display_age">0</span> Years Old
                         </div>
                     </div>
@@ -114,43 +103,37 @@
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Gender</label>
-                        <select name="gender" id="field_gender" required class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Gender</label>
+                        <select name="gender" id="field_gender" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-400">
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Address</label>
-                        <input type="text" name="address" id="field_address" required class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1">
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Service</label>
-                        <select name="service" id="field_service" required class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Inquired Service</label>
+                        <select name="service" id="field_service" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-400">
                             <option value="Immunization">Immunization</option>
                             <option value="Family Planning">Family Planning</option>
                             <option value="Deworming">Deworming</option>
-                            <option value="Supplementation">Supplementation</option>
                             <option value="Pre-natal">Pre-natal</option>
                             <option value="Ferrous">Ferrous</option>
+                            <option value="Nutrition">Nutrition</option>
+                            <option value="Dental">Dental</option>
                             <option value="Free Consultation">Free Consultation</option>
-                            <option value="RBS (Random Blood Sugar)">RBS (Random Blood Sugar)</option>
-                            <option value="Feeding Program">Feeding Program</option>
-                            <option value="TB DOTS">TB DOTS</option>
+                            <option value="Laboratory">Laboratory</option>
+                            <option value="Emergency">Emergency</option>
                         </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Last Visit</label>
-                        <input type="date" name="last_visit" id="field_last_visit" required class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 outline-none">
                     </div>
                 </div>
 
-                <div class="flex gap-3 pt-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Address</label>
+                    <input type="text" name="address" id="field_address" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <div class="flex gap-3 pt-6 border-t border-slate-100">
                     <button type="button" onclick="toggleModal('patientModal')" class="flex-1 px-4 py-3 bg-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-200 transition">Cancel</button>
-                    <button type="submit" class="flex-1 px-4 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-200 transition">Save Changes</button>
+                    <button type="submit" class="flex-1 px-4 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-200 transition">Save Patient</button>
                 </div>
             </form>
         </div>
@@ -162,7 +145,6 @@
         document.getElementById(modalID).classList.toggle("hidden");
     }
 
-    // New Function to calculate age in the browser
     function calculateAge(birthDate) {
         if (!birthDate) {
             document.getElementById('display_age').innerText = "0";
@@ -184,7 +166,7 @@
         form.action = "{{ route('patients.store') }}";
         document.getElementById('methodContainer').innerHTML = ""; 
         form.reset();
-        document.getElementById('display_age').innerText = "0"; // Reset age display
+        document.getElementById('display_age').innerText = "0";
         toggleModal('patientModal');
     }
 
@@ -198,16 +180,14 @@
         document.getElementById('field_first_name').value = patient.first_name;
         document.getElementById('field_middle_name').value = patient.middle_name || '';
         document.getElementById('field_last_name').value = patient.last_name;
-        document.getElementById('field_suffix').value = patient.suffix || '';
-        
-        // Use birthday instead of age
         document.getElementById('field_birthday').value = patient.birthday;
-        calculateAge(patient.birthday); // Trigger the auto-calc for the display
+        
+        // Trigger age calculation so the display box updates immediately
+        calculateAge(patient.birthday);
 
         document.getElementById('field_gender').value = patient.gender;
         document.getElementById('field_address').value = patient.address;
         document.getElementById('field_service').value = patient.service;
-        document.getElementById('field_last_visit').value = patient.last_visit;
 
         toggleModal('patientModal');
     }

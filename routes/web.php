@@ -7,8 +7,8 @@ use App\Http\Controllers\BMICalculatorController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Patient;
-use App\Models\Appointment;
 use App\Models\Medicine;
+use App\Models\BmiRecord; // Added this since you are tracking BMI now
 
 // Guest Routes
 Route::get('/', [AuthController::class, 'showLogin'])->name('login');
@@ -19,20 +19,19 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.po
 // Protected Routes
 Route::middleware('auth')->group(function () {
     
-   Route::get('/dashboard', [PatientController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [PatientController::class, 'dashboard'])->name('dashboard');
 
-    // 2. DATA ROUTE: This provides the numbers for your auto-update script
+    // UPDATED: Removed Appointment logic from API stats
     Route::get('/api/stats', function () {
         return response()->json([
             'totalPatients' => Patient::count(),
-            'todayAppointments' => Appointment::whereDate('appointment_date', today())->count(),
-            'pendingAppointments' => Appointment::where('status', 'pending')->count(),
+            'totalBmi' => BmiRecord::count(), // Replaced appointments with BMI count
             'medicineStock' => Medicine::sum('stock'),
             'lowStockCount' => Medicine::where('stock', '<', 10)->count(),
         ]);
     })->name('api.stats');
 
-    // BMI Calculator (Moved inside Auth for security)
+    // BMI Calculator
     Route::get('/bmi-calculator', [BMICalculatorController::class, 'index'])->name('bmi.index');
     Route::post('/bmi-calculator', [BMICalculatorController::class, 'store'])->name('bmi.store');
 
@@ -42,14 +41,7 @@ Route::middleware('auth')->group(function () {
 
     // Patient Management
     Route::resource('patients', PatientController::class);
-    Route::get('/patients/{patient}/history', [PatientController::class, 'history'])->name('patients.history');
-
-    // Calendar & Appointments
-    Route::get('/calendar', [PatientController::class, 'calendar'])->name('calendar');
-    Route::post('/appointments', [PatientController::class, 'storeAppointment'])->name('appointments.store');
-    Route::put('/appointments/{id}', [PatientController::class, 'updateAppointment'])->name('appointments.update');
-    Route::delete('/appointments/{id}', [PatientController::class, 'destroyAppointment'])->name('appointments.destroy');
-    Route::patch('/appointments/{appointment}/status', [PatientController::class, 'updateAppointmentStatus'])->name('appointments.status');
+    // Removed patients.history as it relied on appointment records
 
     // Health Services
     Route::get('/services', [PatientController::class, 'indexServices'])->name('services.index');
@@ -62,4 +54,7 @@ Route::middleware('auth')->group(function () {
         request()->session()->regenerateToken();
         return redirect('/');
     })->name('logout');
+    // Add these back to routes/web.php
+Route::get('/calendar', [PatientController::class, 'calendar'])->name('calendar');
+Route::post('/appointments', [PatientController::class, 'storeAppointment'])->name('appointments.store');
 });

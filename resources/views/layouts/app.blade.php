@@ -25,42 +25,43 @@
         </div>
 
         <nav class="flex-1 px-4 space-y-2 mt-4 overflow-y-auto">
-            <a href="{{ route('dashboard') }}" 
-               class="flex items-center gap-3 px-4 py-3 {{ request()->is('dashboard*') ? 'text-blue-600 bg-blue-50 font-bold' : 'text-gray-500 hover:bg-gray-50' }} rounded-xl transition">
-                <span class="w-5 text-center"><i class="fa-solid fa-table-columns"></i></span>
-                <span class="whitespace-nowrap">Dashboard</span>
-            </a>
+    <a href="{{ route('dashboard') }}" 
+       class="flex items-center gap-3 px-4 py-3 {{ request()->is('dashboard*') ? 'text-blue-600 bg-blue-50 font-bold' : 'text-gray-500 hover:bg-gray-50' }} rounded-xl transition">
+        <span class="w-5 text-center"><i class="fa-solid fa-table-columns"></i></span>
+        <span class="whitespace-nowrap">Dashboard</span>
+    </a>
 
-            <a href="{{ route('patients.index') }}" 
-               class="flex items-center gap-3 px-4 py-3 {{ request()->is('patients*') ? 'text-blue-600 bg-blue-50 font-bold' : 'text-gray-500 hover:bg-gray-50' }} rounded-xl transition">
-                <span class="w-5 text-center"><i class="fa-solid fa-users"></i></span>
-                <span class="whitespace-nowrap">Patients</span>
-            </a>
+    <a href="{{ route('patients.index') }}" 
+       class="flex items-center gap-3 px-4 py-3 {{ request()->is('patients*') ? 'text-blue-600 bg-blue-50 font-bold' : 'text-gray-500 hover:bg-gray-50' }} rounded-xl transition">
+        <span class="w-5 text-center"><i class="fa-solid fa-users"></i></span>
+        <span class="whitespace-nowrap">Patients</span>
+    </a>
 
-            <a href="{{ route('calendar') }}" 
-               class="flex items-center gap-3 px-4 py-3 {{ request()->is('calendar*') ? 'text-blue-600 bg-blue-50 font-bold' : 'text-gray-500 hover:bg-gray-50' }} rounded-xl transition">
-                <span class="w-5 text-center"><i class="fa-solid fa-calendar-days"></i></span>
-                <span class="whitespace-nowrap">Calendar</span>
-            </a>
 
-            <a href="{{ route('services.index') }}" 
-               class="flex items-center gap-3 px-4 py-3 {{ request()->is('services*') ? 'text-blue-600 bg-blue-50 font-bold' : 'text-gray-500 hover:bg-gray-50' }} rounded-xl transition">
-                <span class="w-5 text-center"><i class="fa-solid fa-stethoscope"></i></span>
-                <span class="whitespace-nowrap">Services</span>
-            </a>
+    <a href="{{ route('calendar') }}" 
+       class="flex items-center gap-3 px-4 py-3 {{ request()->is('calendar*') ? 'text-blue-600 bg-blue-50 font-bold' : 'text-gray-500 hover:bg-gray-50' }} rounded-xl transition">
+        <span class="w-5 text-center"><i class="fa-solid fa-calendar-days"></i></span>
+        <span class="whitespace-nowrap">Calendar</span>
+    </a>
 
-            <a href="{{ route('medicines.index') }}" 
-               class="flex items-center gap-3 px-4 py-3 {{ request()->is('medicines*') ? 'text-blue-600 bg-blue-50 font-bold' : 'text-gray-500 hover:bg-gray-50' }} rounded-xl transition">
-                <span class="w-5 text-center"><i class="fa-solid fa-pills"></i></span>
-                <span class="whitespace-nowrap">Medicines</span>
-            </a>
+    <a href="{{ route('services.index') }}" 
+       class="flex items-center gap-3 px-4 py-3 {{ request()->is('services*') ? 'text-blue-600 bg-blue-50 font-bold' : 'text-gray-500 hover:bg-gray-50' }} rounded-xl transition">
+        <span class="w-5 text-center"><i class="fa-solid fa-stethoscope"></i></span>
+        <span class="whitespace-nowrap">Services</span>
+    </a>
 
-            <a href="{{ route('bmi.index') }}" 
-               class="flex items-center gap-3 px-4 py-3 {{ request()->is('bmi*') ? 'text-blue-600 bg-blue-50 font-bold' : 'text-gray-500 hover:bg-gray-50' }} rounded-xl transition">
-                <span class="w-5 text-center"><i class="fa-solid fa-calculator"></i></span>
-                <span class="whitespace-nowrap">BMI Calculator</span>
-            </a>    
-        </nav>
+    <a href="{{ route('medicines.index') }}" 
+       class="flex items-center gap-3 px-4 py-3 {{ request()->is('medicines*') ? 'text-blue-600 bg-blue-50 font-bold' : 'text-gray-500 hover:bg-gray-50' }} rounded-xl transition">
+        <span class="w-5 text-center"><i class="fa-solid fa-pills"></i></span>
+        <span class="whitespace-nowrap">Medicines</span>
+    </a>
+
+    <a href="{{ route('bmi.index') }}" 
+       class="flex items-center gap-3 px-4 py-3 {{ request()->is('bmi*') ? 'text-blue-600 bg-blue-50 font-bold' : 'text-gray-500 hover:bg-gray-50' }} rounded-xl transition">
+        <span class="w-5 text-center"><i class="fa-solid fa-calculator"></i></span>
+        <span class="whitespace-nowrap">BMI Calculator</span>
+    </a>    
+</nav>
 
         <div class="p-4 border-t border-gray-100">
             <form action="{{ route('logout') }}" method="POST">
